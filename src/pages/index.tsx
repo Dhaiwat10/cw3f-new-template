@@ -1,21 +1,25 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useContract, useContractRead } from 'wagmi';
+import { useReadContract } from 'wagmi'
+
 import abi from '../abi.json';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const CONTRACT_ADDRESS = '0x5d0cB8c5C90A714B4Ce2891cf8CC20fc2A1bA04F';
+const CONTRACT_ADDRESS = '0xcfCE58eDD09956eA2460F830feF5b82f0b5ce4ef';
 
 export default function Home() {
   const [hasMounted, setHasMounted] = useState(false);
 
-  const { data } = useContractRead({
+  const result = useReadContract({
     address: CONTRACT_ADDRESS,
-    abi: abi,
+    abi,
     functionName: 'greet',
-    args: [],
   });
-  const greeting = (data as string) || 'Loading';
+  console.log({
+    result,
+    data: result.data,
+  })
+  const greeting = (result.data as string) || 'Loading';
 
   // This is to get around the infamous 'Hydration failed' error. See: https://codingwithmanny.medium.com/understanding-hydration-errors-in-nextjs-13-with-a-web3-wallet-connection-8155c340fbd5
   useEffect(() => {
@@ -37,7 +41,7 @@ export default function Home() {
         <p>
           Just fetched the greeting: <b>{greeting}</b> from{' '}
           <Link
-            href={`https://goerli.etherscan.io/address/${CONTRACT_ADDRESS}`}
+            href={`https://sepolia.etherscan.io/address/${CONTRACT_ADDRESS}`}
             className='underline'
           >
             {CONTRACT_ADDRESS}
